@@ -1,5 +1,6 @@
 package com.example.behindthescenes.network
 
+import com.example.behindthescenes.database.DatabaseVideo
 import com.example.behindthescenes.domain.Video
 import com.squareup.moshi.JsonClass
 
@@ -15,7 +16,8 @@ data class NetworkVideo(
     val url: String,
     val updated: String,
     val thumbnail: String,
-    val closedCaptions: String?)
+    val closedCaptions: String?
+)
 
 
 fun NetworkVideoContainer.asDomainModel(): List<Video> {
@@ -25,6 +27,19 @@ fun NetworkVideoContainer.asDomainModel(): List<Video> {
             description = it.description,
             url = it.url,
             updated = it.updated,
-            thumbnail = it.thumbnail)
+            thumbnail = it.thumbnail
+        )
     }
+}
+
+fun NetworkVideoContainer.asDatabaseModel(): Array<DatabaseVideo> {
+    return videos.map {
+        DatabaseVideo(
+            title = it.title,
+            description = it.description,
+            url = it.url,
+            updated = it.updated,
+            thumbnail = it.thumbnail
+        )
+    }.toTypedArray()
 }
