@@ -1,12 +1,16 @@
 package com.example.behindthescenes.ui
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -55,19 +59,14 @@ class DevByteFragment : Fragment() {
 
         binding.setLifecycleOwner(viewLifecycleOwner)
 
+
         binding.viewModel = viewModel
+        viewModel.initViewModel(isInternetAvailable())
 
         viewModelAdapter = DevByteAdapter(VideoClick {
-            // When a video is clicked this block or lambda will be called by DevByteAdapter
-
-            // context is not around, we can safely discard this click since the Fragment is no
-            // longer on the screen
             val packageManager = context?.packageManager ?: return@VideoClick
-
-            // Try to generate a direct intent to the YouTube app
             var intent = Intent(Intent.ACTION_VIEW, it.launchUri)
             if(intent.resolveActivity(packageManager) == null) {
-                // YouTube app isn't found, use the web url
                 intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.url))
             }
 
@@ -80,6 +79,14 @@ class DevByteFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+
+    fun isInternetAvailable(): Boolean {
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return activeNetwork.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
 

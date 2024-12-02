@@ -80,6 +80,7 @@ dependencies {
 
     // Room database
     implementation ("androidx.room:room-runtime: 2.6.1")
+    kapt ("androidx.room:room-compiler:2.5.0")
 
     // Kotlin Extensions and Coroutines support for Room
     implementation ("androidx.room:room-ktx:2.6.1")

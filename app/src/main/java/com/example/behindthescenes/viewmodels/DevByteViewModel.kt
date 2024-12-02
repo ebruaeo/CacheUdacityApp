@@ -1,6 +1,9 @@
 package com.example.behindthescenes.viewmodels
 
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.lifecycle.*
 import com.example.behindthescenes.database.getDatabase
 import com.example.behindthescenes.domain.Video
@@ -18,13 +21,21 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
    private val database = getDatabase(application)
     private val videosRepository = VideosRepository(database)
 
-    init {
-        viewModelScope.launch {
-            videosRepository.refreshVideos()
+    fun initViewModel(isInternetAvailable: Boolean) {
+
+        if (isInternetAvailable){
+            viewModelScope.launch {
+                videosRepository.refreshVideos()
+            }
+        } else{
+
         }
+
     }
 
     val playlist = videosRepository.videos
+
+
 
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
